@@ -56,9 +56,10 @@ class Calc(tpg.Parser):
     token number: '\d+' int ;
     token op1: '[|&+-]' make_op ;
     token op2: '[*/]' make_op ;
+    token finish: 'exit' ;
     token id: '\w+' ;
 
-    START/e -> Operator $e=None$ | Expr/e | $e=None$ ;
+    START/e -> finish $ global Stop; Stop=True; e=None $ | Operator $e=None$ | Expr/e | $e=None$ ;
     Operator -> Assign ;
     Assign -> id/i '=' Expr/e $Vars[i]=e$ ;
     Expr/t -> Fact/t ( op1/op Fact/f $t=op(t,f)$ )* ;
@@ -77,9 +78,14 @@ calc = Calc()
 Vars={}
 PS1='--> '
 
+print "Welcome to calc. Type 'exit' or press Ctrl + D to leave"
+
 Stop=False
 while not Stop:
-    line = raw_input(PS1)
+    try:
+        line = raw_input(PS1)
+    except EOFError:
+        break
     try:
         res = calc(line)
     except tpg.Error as exc:
