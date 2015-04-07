@@ -81,11 +81,25 @@ PS1='--> '
 print "Welcome to calc. Type 'exit' or press Ctrl + D to leave"
 
 Stop=False
+clst = []
+
 while not Stop:
-    try:
-        line = raw_input(PS1)
-    except EOFError:
-        break
+    if len(clst):
+    	line = clst[0]
+        print PS1, line
+        clst = clst[1:]
+    else:
+        try:
+            line = raw_input(PS1)
+        except EOFError:
+            break
+        if line[:4] == 'file':
+            try:
+                src = open(line[5:])
+                clst = list(src.read().split('\n'))
+                continue
+            except:
+                print 'Something wrong with file'
     try:
         res = calc(line)
     except tpg.Error as exc:
