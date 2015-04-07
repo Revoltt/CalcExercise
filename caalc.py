@@ -100,6 +100,7 @@ while not Stop:
                 continue
             except:
                 print 'Something wrong with file'
+                continue
     try:
         res = calc(line)
     except tpg.Error as exc:
